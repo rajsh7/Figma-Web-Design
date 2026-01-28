@@ -52,6 +52,10 @@ export interface FormData {
   faqQuestion: string
   faqAnswer: string
 
+  // About Us content
+  aboutUsTitle: string
+  aboutUsDescription: string
+
   // Digital Files (Step 2)
   digitalFileType: "single" | "multiple"
   digitalFileUrl: string
@@ -72,12 +76,14 @@ export interface FormData {
   // Advanced Settings (Step 3)
   theme: string
   style: "design" | "reset"
+  backgroundColor: string
   buttonColor: string
   textColor: string
   checkoutType: "same-page" | "customize"
   emailRequired: boolean
   phoneRequired: boolean
   verificationOrder: boolean
+  discountOffer: boolean
   gstPrice: string
   termsConditions: string
   refundPolicy: string
@@ -121,6 +127,8 @@ export const initialFormData: FormData = {
   testimonialImageUrl: "",
   faqQuestion: "",
   faqAnswer: "",
+  aboutUsTitle: "",
+  aboutUsDescription: "",
   digitalFileType: "single",
   digitalFileUrl: "",
   digitalFileCoverImage: null,
@@ -148,10 +156,12 @@ export const initialFormData: FormData = {
   postPurchaseBehavior: "",
   metaPixelId: "",
   googleAnalyticsId: "",
+  backgroundColor: "#FFFFFF",
   pageExpiry: true,
   termsEnabled: true,
   darkTheme: false,
   deactivateSales: false,
   trackingEnabled: false,
   color: "",
+  discountOffer: false,
 }

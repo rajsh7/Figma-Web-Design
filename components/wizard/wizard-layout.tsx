@@ -33,11 +33,11 @@ export function WizardLayout({
   return (
     <div className="fixed inset-0 bg-background z-50 flex flex-col md:flex-row">
       {/* Preview Panel */}
-      <div className="hidden md:flex flex-1 bg-muted/50 items-center justify-center p-8">
+      <div className="hidden md:flex flex-1 bg-muted/50 items-center justify-center p-8 overflow-y-auto">
         <div 
           className={cn(
-            "bg-background rounded-lg shadow-2xl overflow-hidden transition-all duration-300",
-            viewMode === "desktop" ? "w-full max-w-2xl aspect-[16/10]" : "w-80 aspect-[9/16]"
+            "bg-background rounded-lg shadow-2xl overflow-y-auto transition-all duration-300 h-full",
+            viewMode === "desktop" ? "w-full max-w-6xl" : "w-[32rem]"
           )}
         >
           <div className="h-full flex flex-col">
@@ -70,8 +70,15 @@ export function WizardLayout({
             </div>
             <div className="flex-1 bg-muted/5">
               {preview ? (
-                <div className="h-full w-full overflow-y-auto">
-                  {preview}
+                <div className="h-full w-full flex justify-center items-start">
+                  <div
+                    className={cn(
+                      "origin-top transform",
+                      viewMode === "desktop" ? "scale-[1.0]" : "scale-[1.0]"
+                    )}
+                  >
+                    {preview}
+                  </div>
                 </div>
               ) : (
                 <div className="h-full w-full flex items-center justify-center p-6">

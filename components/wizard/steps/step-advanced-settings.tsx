@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -8,7 +9,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
 import type { FormData } from "@/lib/types"
-import Image from "next/image"
 
 interface StepAdvancedSettingsProps {
   formData: FormData
@@ -27,7 +27,20 @@ const themes = [
   { id: "dusk", name: "Dusk", image: "/themes/dusk.jpg" },
 ]
 
+type StyleSection = "backgrounds" | "buttons" | "images"
+
 export function StepAdvancedSettings({ formData, updateFormData, onNext, onBack }: StepAdvancedSettingsProps) {
+  const [activeStyleSection, setActiveStyleSection] = useState<StyleSection>("backgrounds")
+  const [questions, setQuestions] = useState<string[]>([])
+
+  const handleAddQuestion = () => {
+    setQuestions((prev) => [...prev, ""])
+  }
+
+  const handleQuestionChange = (index: number, value: string) => {
+    setQuestions((prev) => prev.map((q, i) => (i === index ? value : q)))
+  }
+
   return (
     <div className="p-4 sm:p-6 space-y-6 overflow-y-auto max-h-[calc(100vh-120px)]">
       {/* Theme and Styling */}
@@ -77,47 +90,71 @@ export function StepAdvancedSettings({ formData, updateFormData, onNext, onBack 
         {/* Color Options */}
         <div className="flex gap-2">
           <Button
-            variant={formData.style === "design" ? "default" : "outline"}
+            variant={activeStyleSection === "backgrounds" ? "default" : "outline"}
             size="sm"
             className="rounded-full"
+            onClick={() => setActiveStyleSection("backgrounds")}
           >
             Backgrounds
           </Button>
           <Button
-            variant="outline"
+            variant={activeStyleSection === "buttons" ? "default" : "outline"}
             size="sm"
             className="rounded-full bg-transparent"
+            onClick={() => setActiveStyleSection("buttons")}
           >
             Buttons
           </Button>
           <Button
-            variant="outline"
+            variant={activeStyleSection === "images" ? "default" : "outline"}
             size="sm"
             className="rounded-full bg-transparent"
+            onClick={() => setActiveStyleSection("images")}
           >
             Images
           </Button>
         </div>
+        
+        {activeStyleSection === "backgrounds" && (
+          <div className="space-y-2">
+            <Label>Background Colour</Label>
+            <Input
+              placeholder="#FFFFFF"
+              value={formData.backgroundColor ?? ""}
+              onChange={(e) => updateFormData({ backgroundColor: e.target.value })}
+            />
+          </div>
+        )}
 
-        {/* Button Color */}
-        <div className="space-y-2">
-          <Label>Button Colour</Label>
-          <Input
-            placeholder="#00000000"
-            value={formData.buttonColor}
-            onChange={(e) => updateFormData({ buttonColor: e.target.value })}
-          />
-        </div>
+        {activeStyleSection === "buttons" && (
+          <>
+            {/* Button Color */}
+            <div className="space-y-2">
+              <Label>Button Colour</Label>
+              <Input
+                placeholder="#000000"
+                value={formData.buttonColor ?? ""}
+                onChange={(e) => updateFormData({ buttonColor: e.target.value })}
+              />
+            </div>
 
-        {/* Text Color */}
-        <div className="space-y-2">
-          <Label>Text Colour</Label>
-          <Input
-            placeholder="#FFFFFFFF"
-            value={formData.textColor}
-            onChange={(e) => updateFormData({ textColor: e.target.value })}
-          />
-        </div>
+            {/* Text Color */}
+            <div className="space-y-2">
+              <Label>Text Colour</Label>
+              <Input
+                placeholder="#FFFFFF"
+                value={formData.textColor ?? ""}
+                onChange={(e) => updateFormData({ textColor: e.target.value })}
+              />
+            </div>
+          </>
+        )}
+
+        {activeStyleSection === "images" && (
+          <div className="space-y-2 text-sm text-muted-foreground">
+            <p>Image settings are controlled from the Page Details step where you add your cover image.</p>
+          </div>
+        )}
       </div>
 
       {/* Checkout Experience */}
@@ -127,9 +164,21 @@ export function StepAdvancedSettings({ formData, updateFormData, onNext, onBack 
           Customize how you would like customers to checkout on this product
         </p>
 
-        <div className="flex items-center gap-4">
-          <span className="text-sm">Same Page Checkout</span>
-          <Button variant="outline" size="sm" className="rounded-full bg-transparent">
+        <div className="flex items-center gap-3">
+          <Button
+            variant={formData.checkoutType === "same-page" ? "default" : "outline"}
+            size="sm"
+            className="rounded-full"
+            onClick={() => updateFormData({ checkoutType: "same-page" })}
+          >
+            Same Page Checkout
+          </Button>
+          <Button
+            variant={formData.checkoutType === "customize" ? "default" : "outline"}
+            size="sm"
+            className="rounded-full bg-transparent"
+            onClick={() => updateFormData({ checkoutType: "customize" })}
+          >
             Customize
           </Button>
         </div>
@@ -137,8 +186,12 @@ export function StepAdvancedSettings({ formData, updateFormData, onNext, onBack 
         {/* Customer information */}
         <div className="space-y-2">
           <Label>Customer information</Label>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between gap-2">
             <span className="text-sm text-muted-foreground">Email ID</span>
+            <Switch
+              checked={formData.emailRequired}
+              onCheckedChange={(checked) => updateFormData({ emailRequired: checked })}
+            />
           </div>
         </div>
 
@@ -162,9 +215,26 @@ export function StepAdvancedSettings({ formData, updateFormData, onNext, onBack 
               />
             </div>
           </div>
-          <Button variant="link" className="text-teal-600 p-0 h-auto text-sm">
+          <Button
+            variant="link"
+            className="text-teal-600 p-0 h-auto text-sm"
+            type="button"
+            onClick={handleAddQuestion}
+          >
             + Add Question
           </Button>
+          {questions.length > 0 && (
+            <div className="space-y-2 pt-2">
+              {questions.map((q, index) => (
+                <Input
+                  key={index}
+                  placeholder={`Question ${index + 1}`}
+                  value={q ?? ""}
+                  onChange={(e) => handleQuestionChange(index, e.target.value)}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
@@ -175,7 +245,7 @@ export function StepAdvancedSettings({ formData, updateFormData, onNext, onBack 
           <Label>GST or Price</Label>
           <Input
             placeholder="Type"
-            value={formData.gstPrice}
+            value={formData.gstPrice ?? ""}
             onChange={(e) => updateFormData({ gstPrice: e.target.value })}
           />
         </div>
@@ -189,7 +259,7 @@ export function StepAdvancedSettings({ formData, updateFormData, onNext, onBack 
           <Label>Terms and Conditions</Label>
           <Input
             placeholder="Type"
-            value={formData.termsConditions}
+            value={formData.termsConditions ?? ""}
             onChange={(e) => updateFormData({ termsConditions: e.target.value })}
           />
         </div>
@@ -198,7 +268,7 @@ export function StepAdvancedSettings({ formData, updateFormData, onNext, onBack 
           <Label>Refund Policy</Label>
           <Input
             placeholder="Type"
-            value={formData.refundPolicy}
+            value={formData.refundPolicy ?? ""}
             onChange={(e) => updateFormData({ refundPolicy: e.target.value })}
           />
         </div>
@@ -207,7 +277,7 @@ export function StepAdvancedSettings({ formData, updateFormData, onNext, onBack 
           <Label>Privacy Policy</Label>
           <Input
             placeholder="Type"
-            value={formData.privacyPolicy}
+            value={formData.privacyPolicy ?? ""}
             onChange={(e) => updateFormData({ privacyPolicy: e.target.value })}
           />
         </div>
@@ -219,7 +289,7 @@ export function StepAdvancedSettings({ formData, updateFormData, onNext, onBack 
           <Label>Page URL</Label>
           <Input
             placeholder="Type"
-            value={formData.pageUrl}
+            value={formData.pageUrl ?? ""}
             onChange={(e) => updateFormData({ pageUrl: e.target.value })}
           />
         </div>
@@ -235,7 +305,7 @@ export function StepAdvancedSettings({ formData, updateFormData, onNext, onBack 
           <Label>What do you want to show users after their purchase? *</Label>
           <Input
             placeholder="Type"
-            value={formData.postPurchaseBehavior}
+            value={formData.postPurchaseBehavior ?? ""}
             onChange={(e) => updateFormData({ postPurchaseBehavior: e.target.value })}
           />
         </div>
@@ -254,7 +324,7 @@ export function StepAdvancedSettings({ formData, updateFormData, onNext, onBack 
             <Label className="text-xs">Pixel ID</Label>
             <Input
               placeholder="Type"
-              value={formData.metaPixelId}
+              value={formData.metaPixelId ?? ""}
               onChange={(e) => updateFormData({ metaPixelId: e.target.value })}
             />
           </div>
@@ -269,7 +339,7 @@ export function StepAdvancedSettings({ formData, updateFormData, onNext, onBack 
             <Label className="text-xs">Pixel ID</Label>
             <Input
               placeholder="Type"
-              value={formData.googleAnalyticsId}
+              value={formData.googleAnalyticsId ?? ""}
               onChange={(e) => updateFormData({ googleAnalyticsId: e.target.value })}
             />
           </div>

@@ -1,5 +1,6 @@
 "use client"
 
+import React, { useState } from 'react'
 import type { Website } from '@/lib/types'
 import { Button } from '@/components/ui/button'
 import { Checkbox } from "@/components/ui/checkbox"
@@ -14,24 +15,38 @@ export function DefaultTemplate({ website }: DefaultTemplateProps) {
 
     if (!formData) return null
 
+    const [coverImageError, setCoverImageError] = useState(false)
+    const [galleryImageError, setGalleryImageError] = useState(false)
+    const [testimonialImageError, setTestimonialImageError] = useState(false)
+
     const buttonStyle = {
         backgroundColor: formData.buttonColor || '#000000',
         color: formData.textColor || '#FFFFFF',
     }
 
+    const pageBackgroundStyle: React.CSSProperties = {
+        backgroundColor: formData.backgroundColor || undefined,
+    }
+
     return (
-        <div className={`min-h-screen ${formData.darkTheme ? 'dark bg-gray-900' : 'bg-white'}`}>
+        <div
+            className={`min-h-screen ${formData.darkTheme ? 'dark' : ''}`}
+            style={pageBackgroundStyle}
+        >
             {/* Hero Section */}
             <section className="relative py-20 px-4">
                 <div className="max-w-4xl mx-auto text-center">
                     {/* Cover Image */}
-                    {formData.coverImageUrl && (
+                    {formData.coverImageUrl && !coverImageError && (
                         <div className="mb-8">
-                            <img
+                            <Image
                                 src={formData.coverImageUrl}
-                                alt={formData.pageTitle}
+                                alt={formData.pageTitle || "Cover image"}
+                                width={1200}
+                                height={400}
                                 className="w-full max-w-2xl mx-auto rounded-lg shadow-lg object-cover"
                                 style={{ maxHeight: '400px' }}
+                                onError={() => setCoverImageError(true)}
                             />
                         </div>
                     )}
@@ -89,31 +104,42 @@ export function DefaultTemplate({ website }: DefaultTemplateProps) {
             </section>
 
             {/* Product Details Section */}
-            {formData.showProduct && formData.productTitle && (
+            {formData.showProduct && (
                 <section className="py-16 px-4 bg-muted/30">
                     <div className="max-w-4xl mx-auto">
-                        <h2 className="text-3xl font-bold mb-6">{formData.productTitle}</h2>
-                        {formData.productDescription && (
-                            <p className="text-lg text-muted-foreground whitespace-pre-wrap">
-                                {formData.productDescription}
-                            </p>
-                        )}
+                        <h2 className="text-3xl font-bold mb-6">
+                            {formData.productTitle || "Product details"}
+                        </h2>
+                        <p className="text-lg text-muted-foreground whitespace-pre-wrap">
+                            {formData.productDescription || "Describe what customers will receive when they purchase this product."}
+                        </p>
                     </div>
                 </section>
             )}
 
             {/* Gallery Section */}
-            {formData.gallery && formData.galleryTitle && (
+            {formData.gallery && (
                 <section className="py-16 px-4">
                     <div className="max-w-4xl mx-auto">
-                        <h2 className="text-3xl font-bold mb-8 text-center">{formData.galleryTitle}</h2>
-                        {formData.galleryCoverImageUrl && (
+                        <h2 className="text-3xl font-bold mb-8 text-center">
+                            {formData.galleryTitle || "Gallery"}
+                        </h2>
+                        {formData.galleryCoverImageUrl && !galleryImageError ? (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                <img
+                                <Image
                                     src={formData.galleryCoverImageUrl}
                                     alt="Gallery"
+                                    width={800}
+                                    height={400}
                                     className="rounded-lg shadow-md w-full h-64 object-cover"
+                                    onError={() => setGalleryImageError(true)}
                                 />
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-muted-foreground">
+                                <div className="border border-dashed rounded-lg p-6 flex items-center justify-center">
+                                    Add images to your gallery from the editor.
+                                </div>
                             </div>
                         )}
                     </div>
@@ -121,21 +147,28 @@ export function DefaultTemplate({ website }: DefaultTemplateProps) {
             )}
 
             {/* Testimonial Section */}
-            {formData.testimonial && formData.testimonialComment && (
+            {formData.testimonial && (
                 <section className="py-16 px-4 bg-muted/30">
                     <div className="max-w-4xl mx-auto">
                         <h2 className="text-3xl font-bold mb-12 text-center">Testimonials</h2>
                         <div className="bg-background rounded-lg shadow-lg p-8 max-w-2xl mx-auto">
                             <div className="flex items-start gap-4">
-                                {formData.testimonialImageUrl && (
-                                    <img
+                                {formData.testimonialImageUrl && !testimonialImageError && (
+                                    <Image
                                         src={formData.testimonialImageUrl}
-                                        alt={formData.testimonialName}
+                                        alt={formData.testimonialName || "Testimonial"}
+                                        width={64}
+                                        height={64}
                                         className="w-16 h-16 rounded-full object-cover"
+                                        onError={() => setTestimonialImageError(true)}
                                     />
                                 )}
                                 <div className="flex-1">
-                                    <p className="text-lg mb-4 italic">"{formData.testimonialComment}"</p>
+                                    <p className="text-lg mb-4 italic">
+                                        {formData.testimonialComment
+                                            ? `"${formData.testimonialComment}"`
+                                            : "Add a customer quote to build trust and social proof."}
+                                    </p>
                                     {formData.testimonialName && (
                                         <p className="font-semibold">— {formData.testimonialName}</p>
                                     )}
@@ -147,16 +180,19 @@ export function DefaultTemplate({ website }: DefaultTemplateProps) {
             )}
 
             {/* FAQ Section */}
-            {formData.faq && formData.faqQuestion && (
+            {formData.faq && (
                 <section className="py-16 px-4">
                     <div className="max-w-4xl mx-auto">
                         <h2 className="text-3xl font-bold mb-12 text-center">Frequently Asked Questions</h2>
                         <div className="space-y-6">
                             <div className="bg-muted/30 rounded-lg p-6">
-                                <h3 className="text-xl font-semibold mb-3">{formData.faqQuestion}</h3>
-                                {formData.faqAnswer && (
-                                    <p className="text-muted-foreground">{formData.faqAnswer}</p>
-                                )}
+                                <h3 className="text-xl font-semibold mb-3">
+                                    {formData.faqQuestion || "What should I add in my FAQ?"}
+                                </h3>
+                                <p className="text-muted-foreground">
+                                    {formData.faqAnswer ||
+                                        "Use this section to answer common questions your customers may have before purchasing."}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -167,9 +203,12 @@ export function DefaultTemplate({ website }: DefaultTemplateProps) {
             {formData.aboutUs && (
                 <section className="py-16 px-4 bg-muted/30">
                     <div className="max-w-4xl mx-auto text-center">
-                        <h2 className="text-3xl font-bold mb-6">About Us</h2>
-                        <p className="text-lg text-muted-foreground">
-                            Learn more about our mission and values.
+                        <h2 className="text-3xl font-bold mb-6">
+                            {formData.aboutUsTitle || "About Us"}
+                        </h2>
+                        <p className="text-lg text-muted-foreground whitespace-pre-wrap">
+                            {formData.aboutUsDescription ||
+                                "Use this space to introduce yourself or your brand and explain what makes your offering unique."}
                         </p>
                     </div>
                 </section>

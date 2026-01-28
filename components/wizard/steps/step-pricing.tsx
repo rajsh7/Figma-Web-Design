@@ -55,7 +55,7 @@ export function StepPricing({ formData, updateFormData, onNext, onBack }: StepPr
               <Input
                 type="number"
                 placeholder="0"
-                value={formData.price}
+                value={formData.price ?? ""}
                 onChange={(e) => updateFormData({ price: e.target.value })}
               />
             </div>
@@ -64,7 +64,7 @@ export function StepPricing({ formData, updateFormData, onNext, onBack }: StepPr
               <Input
                 type="number"
                 placeholder="0"
-                value={formData.discountPrice}
+                value={formData.discountPrice ?? ""}
                 onChange={(e) => updateFormData({ discountPrice: e.target.value })}
               />
             </div>
@@ -73,7 +73,11 @@ export function StepPricing({ formData, updateFormData, onNext, onBack }: StepPr
 
         {/* Offer discounted price checkbox */}
         <div className="flex items-center gap-2">
-          <Checkbox id="discount-offer" />
+        <Checkbox
+          id="discount-offer"
+          checked={formData.discountOffer}
+          onCheckedChange={(checked) => updateFormData({ discountOffer: !!checked })}
+        />
           <Label htmlFor="discount-offer" className="font-normal text-sm">
             Offer discounted price on selling price
           </Label>
@@ -123,7 +127,13 @@ export function StepPricing({ formData, updateFormData, onNext, onBack }: StepPr
               <p className="text-xs text-muted-foreground">Unlimited Sale</p>
               <p className="text-xs text-teal-600">INR 454.00 <span className="line-through text-muted-foreground">464</span></p>
               <div className="flex items-center gap-2 mt-2">
-                <Checkbox id="compulsory" />
+                <Checkbox
+                  id="compulsory"
+                  checked={formData.limitPurchases}
+                  onCheckedChange={(checked) =>
+                    updateFormData({ limitPurchases: !!checked })
+                  }
+                />
                 <Label htmlFor="compulsory" className="font-normal text-xs">
                   Make this compulsory to buy
                 </Label>
