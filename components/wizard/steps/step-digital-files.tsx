@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import type { FormData } from "@/lib/types"
+import { useState } from "react"
 
 interface StepDigitalFilesProps {
   formData: FormData
@@ -23,6 +24,8 @@ interface StepDigitalFilesProps {
 }
 
 export function StepDigitalFiles({ formData, updateFormData, onNext }: StepDigitalFilesProps) {
+  const [tab, setTab] = useState<"digital-files" | "product-details" | "price-policy">("digital-files")
+
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
@@ -34,13 +37,28 @@ export function StepDigitalFiles({ formData, updateFormData, onNext }: StepDigit
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 sm:p-6 space-y-6">
       {/* Step Tabs */}
-      <Tabs defaultValue="digital-files" className="w-full">
-        <TabsList className="w-full justify-start bg-transparent border-b rounded-none p-0 h-auto">
+      <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)} className="w-full">
+        {/* Mobile: control menu (no horizontal scroll) */}
+        <div className="sm:hidden">
+          <Select value={tab} onValueChange={(v) => setTab(v as typeof tab)}>
+            <SelectTrigger className="w-full">
+              <SelectValue placeholder="Select section" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="digital-files">Digital Files</SelectItem>
+              <SelectItem value="product-details">Product Details</SelectItem>
+              <SelectItem value="price-policy">Price/Policy</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Desktop: tabs */}
+        <TabsList className="hidden sm:flex w-full justify-start bg-transparent border-b rounded-none p-0 h-auto">
           <TabsTrigger
             value="digital-files"
-            className="data-[state=active]:border-b-2 data-[state=active]:border-foreground data-[state=active]:bg-transparent rounded-none pb-3 text-sm"
+            className="shrink-0 data-[state=active]:border-b-2 data-[state=active]:border-foreground data-[state=active]:bg-transparent rounded-none pb-3 text-sm"
           >
             <span className="flex items-center gap-2">
               <Info className="size-4" />
@@ -49,13 +67,13 @@ export function StepDigitalFiles({ formData, updateFormData, onNext }: StepDigit
           </TabsTrigger>
           <TabsTrigger
             value="product-details"
-            className="data-[state=active]:border-b-2 data-[state=active]:border-foreground data-[state=active]:bg-transparent rounded-none pb-3 text-sm"
+            className="shrink-0 data-[state=active]:border-b-2 data-[state=active]:border-foreground data-[state=active]:bg-transparent rounded-none pb-3 text-sm"
           >
             Product Details
           </TabsTrigger>
           <TabsTrigger
             value="price-policy"
-            className="data-[state=active]:border-b-2 data-[state=active]:border-foreground data-[state=active]:bg-transparent rounded-none pb-3 text-sm"
+            className="shrink-0 data-[state=active]:border-b-2 data-[state=active]:border-foreground data-[state=active]:bg-transparent rounded-none pb-3 text-sm"
           >
             Price/Policy
           </TabsTrigger>
@@ -99,7 +117,7 @@ export function StepDigitalFiles({ formData, updateFormData, onNext }: StepDigit
                     <img
                       src={formData.digitalFileCoverImageUrl || "/placeholder.svg"}
                       alt="Cover"
-                      className="mx-auto max-h-32 rounded-md object-cover"
+                      className="mx-auto max-h-32 w-full max-w-xs rounded-md object-cover"
                     />
                   ) : (
                     <>

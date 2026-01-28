@@ -20,7 +20,7 @@ interface StepSettingsProps {
 
 export function StepSettings({ formData, updateFormData, onPublish }: StepSettingsProps) {
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 sm:p-6 space-y-6">
       {/* Colour */}
       <div className="space-y-2">
         <Label>Colour</Label>
@@ -42,7 +42,7 @@ export function StepSettings({ formData, updateFormData, onPublish }: StepSettin
       </div>
 
       {/* Page Expiry */}
-      <div className="flex items-center justify-between py-4 border-b">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 py-4 border-b">
         <div>
           <h4 className="font-medium">Page Expiry</h4>
           <p className="text-sm text-muted-foreground">
@@ -56,7 +56,7 @@ export function StepSettings({ formData, updateFormData, onPublish }: StepSettin
       </div>
 
       {/* Terms and Conditions */}
-      <div className="flex items-center justify-between py-4 border-b">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 py-4 border-b">
         <div>
           <h4 className="font-medium">Terms and Conditions</h4>
           <p className="text-sm text-muted-foreground">
@@ -70,7 +70,7 @@ export function StepSettings({ formData, updateFormData, onPublish }: StepSettin
       </div>
 
       {/* Dark theme */}
-      <div className="flex items-center justify-between py-4 border-b">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 py-4 border-b">
         <div>
           <h4 className="font-medium">Dark theme</h4>
         </div>
@@ -81,7 +81,7 @@ export function StepSettings({ formData, updateFormData, onPublish }: StepSettin
       </div>
 
       {/* Deactivate sales */}
-      <div className="flex items-center justify-between py-4 border-b">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 py-4 border-b">
         <div>
           <h4 className="font-medium">Deactivate sales</h4>
         </div>
@@ -92,7 +92,7 @@ export function StepSettings({ formData, updateFormData, onPublish }: StepSettin
       </div>
 
       {/* Tracking */}
-      <div className="flex items-center justify-between py-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 py-4">
         <div>
           <h4 className="font-medium">Tracking</h4>
         </div>

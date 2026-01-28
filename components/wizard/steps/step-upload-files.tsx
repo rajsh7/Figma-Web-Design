@@ -16,13 +16,13 @@ interface StepUploadFilesProps {
 
 export function StepUploadFiles({ formData, updateFormData, onNext }: StepUploadFilesProps) {
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 sm:p-6 space-y-6">
       <h2 className="text-lg font-semibold">Upload Your Digital Files</h2>
 
       {/* File Link */}
-      <div className="flex items-center gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-2">
         <Input placeholder="Add file link" className="flex-1" />
-        <Button variant="outline" size="sm">Add Link</Button>
+        <Button variant="outline" size="sm" className="w-full sm:w-auto">Add Link</Button>
       </div>
 
       <div className="text-center text-sm text-muted-foreground">Or</div>
@@ -49,7 +49,7 @@ export function StepUploadFiles({ formData, updateFormData, onNext }: StepUpload
         <h3 className="font-semibold">Pricing</h3>
         
         {/* Fixed Price */}
-        <div className="flex items-center justify-between py-3 border-b">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 py-3 border-b">
           <div>
             <h4 className="font-medium">Fixed Price</h4>
             <p className="text-sm text-muted-foreground">Charge A One Time Fixed Pay</p>
@@ -65,7 +65,7 @@ export function StepUploadFiles({ formData, updateFormData, onNext }: StepUpload
         </div>
 
         {/* Customers decide the Price */}
-        <div className="flex items-center justify-between py-3 border-b">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 py-3 border-b">
           <div>
             <h4 className="font-medium">Customers decide the Price</h4>
             <p className="text-sm text-muted-foreground">Charge A One Time Fixed Pay</p>
@@ -81,7 +81,7 @@ export function StepUploadFiles({ formData, updateFormData, onNext }: StepUpload
         </div>
 
         {/* Purchasing Power Parity */}
-        <div className="flex items-center justify-between py-3 border-b">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 py-3 border-b">
           <div>
             <h4 className="font-medium">Purchasing Power Parity</h4>
             <p className="text-sm text-muted-foreground">
@@ -97,7 +97,7 @@ export function StepUploadFiles({ formData, updateFormData, onNext }: StepUpload
         </div>
 
         {/* Limit Purchases */}
-        <div className="flex items-center justify-between py-3">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 py-3">
           <div>
             <h4 className="font-medium">Limit total number of purchases?</h4>
             <p className="text-sm text-muted-foreground">

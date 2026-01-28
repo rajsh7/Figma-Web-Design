@@ -15,6 +15,7 @@ interface WizardLayoutProps {
   onClose: () => void
   onPublish?: () => void
   showPublish?: boolean
+  preview?: React.ReactNode
 }
 
 export function WizardLayout({
@@ -25,13 +26,14 @@ export function WizardLayout({
   onClose,
   onPublish,
   showPublish = false,
+  preview,
 }: WizardLayoutProps) {
   const [viewMode, setViewMode] = useState<"desktop" | "mobile">("desktop")
 
   return (
-    <div className="fixed inset-0 bg-background z-50 flex">
+    <div className="fixed inset-0 bg-background z-50 flex flex-col md:flex-row">
       {/* Preview Panel */}
-      <div className="flex-1 bg-muted/50 flex items-center justify-center p-8">
+      <div className="hidden md:flex flex-1 bg-muted/50 items-center justify-center p-8">
         <div 
           className={cn(
             "bg-background rounded-lg shadow-2xl overflow-hidden transition-all duration-300",
@@ -66,32 +68,30 @@ export function WizardLayout({
                 </div>
               </div>
             </div>
-            <div className="flex-1 p-6 flex items-center justify-center">
-              <div className="text-center">
-                <h2 className="text-lg font-semibold mb-2">What kind of website you would like to make</h2>
-                <p className="text-sm text-muted-foreground">We will customise your experience accordingly</p>
-                <div className="flex justify-center gap-4 mt-6">
-                  <div className="w-20 h-16 rounded-lg bg-gradient-to-br from-sky-400 to-sky-600 flex items-center justify-center">
-                    <div className="w-8 h-6 bg-background/20 rounded" />
-                  </div>
-                  <div className="w-20 h-16 rounded-lg bg-gradient-to-br from-pink-400 to-pink-600 flex items-center justify-center">
-                    <div className="w-8 h-6 bg-background/20 rounded" />
-                  </div>
-                  <div className="w-20 h-16 rounded-lg bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center">
-                    <div className="w-8 h-6 bg-background/20 rounded" />
+            <div className="flex-1 bg-muted/5">
+              {preview ? (
+                <div className="h-full w-full overflow-y-auto">
+                  {preview}
+                </div>
+              ) : (
+                <div className="h-full w-full flex items-center justify-center p-6">
+                  <div className="text-center">
+                    <h2 className="text-lg font-semibold mb-2">Start customizing your page</h2>
+                    <p className="text-sm text-muted-foreground">
+                      As you fill in the steps on the right, a live preview of your page will appear here.
+                    </p>
                   </div>
                 </div>
-                <Button className="mt-6 rounded-full bg-teal-500 hover:bg-teal-600 text-background">Next</Button>
-              </div>
+              )}
             </div>
           </div>
         </div>
       </div>
 
       {/* Form Panel */}
-      <div className="w-[480px] bg-background border-l flex flex-col h-full overflow-hidden">
+      <div className="w-full md:w-[480px] bg-background md:border-l flex flex-col h-full overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b shrink-0">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-4 border-b shrink-0">
           <div className="flex items-center gap-3">
             <button onClick={onClose} className="hover:bg-muted rounded-md p-1">
               <X className="size-5" />
@@ -99,8 +99,34 @@ export function WizardLayout({
             <span className="text-sm font-medium">New Page</span>
           </div>
           <div className="flex items-center gap-3">
+            {/* Preview toggle (mobile only) */}
+            <div className="md:hidden">
+              <div className="flex items-center gap-2 bg-muted rounded-md px-2 py-1">
+                <button
+                  onClick={() => setViewMode("desktop")}
+                  className={cn(
+                    "p-1 rounded",
+                    viewMode === "desktop" && "bg-background shadow-sm"
+                  )}
+                  aria-label="Desktop preview"
+                >
+                  <Monitor className="size-4" />
+                </button>
+                <button
+                  onClick={() => setViewMode("mobile")}
+                  className={cn(
+                    "p-1 rounded",
+                    viewMode === "mobile" && "bg-background shadow-sm"
+                  )}
+                  aria-label="Mobile preview"
+                >
+                  <Smartphone className="size-4" />
+                </button>
+              </div>
+            </div>
+
             {/* Step indicator */}
-            <div className="flex items-center gap-1.5">
+            <div className="hidden sm:flex items-center gap-1.5">
               {Array.from({ length: totalSteps }).map((_, i) => (
                 <div
                   key={i}
@@ -111,7 +137,7 @@ export function WizardLayout({
                 />
               ))}
             </div>
-            <span className="text-sm text-muted-foreground">{stepLabel}</span>
+            <span className="hidden sm:inline text-sm text-muted-foreground">{stepLabel}</span>
             {showPublish && (
               <Button
                 onClick={onPublish}

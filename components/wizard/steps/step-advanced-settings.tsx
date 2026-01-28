@@ -29,12 +29,12 @@ const themes = [
 
 export function StepAdvancedSettings({ formData, updateFormData, onNext, onBack }: StepAdvancedSettingsProps) {
   return (
-    <div className="p-6 space-y-6 overflow-y-auto max-h-[calc(100vh-120px)]">
+    <div className="p-4 sm:p-6 space-y-6 overflow-y-auto max-h-[calc(100vh-120px)]">
       {/* Theme and Styling */}
       <div className="space-y-4">
         <h3 className="font-semibold">Theme and Styling</h3>
         
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
           {themes.map((theme) => (
             <button
               key={theme.id}
@@ -61,7 +61,7 @@ export function StepAdvancedSettings({ formData, updateFormData, onNext, onBack 
             onValueChange={(value: "design" | "reset") =>
               updateFormData({ style: value })
             }
-            className="flex gap-4"
+            className="flex flex-col sm:flex-row gap-3 sm:gap-4"
           >
             <div className="flex items-center gap-2">
               <RadioGroupItem value="design" id="design" />
@@ -145,7 +145,7 @@ export function StepAdvancedSettings({ formData, updateFormData, onNext, onBack 
         {/* Ask additional questions */}
         <div className="space-y-2">
           <Label>Ask additional questions</Label>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
             <div className="flex items-center gap-2">
               <Checkbox 
                 id="phone"
@@ -154,7 +154,7 @@ export function StepAdvancedSettings({ formData, updateFormData, onNext, onBack 
               />
               <Label htmlFor="phone" className="font-normal text-sm">Phone number</Label>
             </div>
-            <div className="flex items-center gap-2 ml-auto">
+            <div className="flex items-center gap-2 sm:ml-auto">
               <span className="text-sm text-muted-foreground">Verification Order</span>
               <Switch
                 checked={formData.verificationOrder}

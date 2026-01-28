@@ -35,7 +35,7 @@ export function StepPageDetails({ formData, updateFormData, onNext }: StepPageDe
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-4 sm:p-6 space-y-6">
       <div>
         <h2 className="text-lg font-semibold mb-6">Tell us about your Website Page</h2>
 
@@ -77,9 +77,9 @@ export function StepPageDetails({ formData, updateFormData, onNext }: StepPageDe
         {/* Cover Image */}
         <div className="space-y-2 mt-4">
           <Label>Cover Image</Label>
-          <div className="flex items-center gap-2 mb-2">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
             <Input placeholder="Add file link" className="flex-1" />
-            <Button variant="outline" size="sm">Add Link</Button>
+            <Button variant="outline" size="sm" className="sm:w-auto w-full">Add Link</Button>
           </div>
           <div className="border-2 border-dashed rounded-lg p-8 text-center">
             <input
@@ -94,7 +94,7 @@ export function StepPageDetails({ formData, updateFormData, onNext }: StepPageDe
                 <img
                   src={formData.coverImageUrl || "/placeholder.svg"}
                   alt="Cover"
-                  className="mx-auto max-h-32 rounded-md object-cover"
+                  className="mx-auto max-h-32 w-full max-w-xs rounded-md object-cover"
                 />
               ) : (
                 <>

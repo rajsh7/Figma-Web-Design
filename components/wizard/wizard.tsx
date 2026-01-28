@@ -11,8 +11,9 @@ import { StepAdvancedSettings } from "./steps/step-advanced-settings"
 import { StepSettings } from "./steps/step-settings"
 import { SuccessPage } from "./success-page"
 import { useWebsites } from "@/contexts/website-context"
-import type { FormData, WebsiteType } from "@/lib/types"
+import type { FormData, Website, WebsiteType } from "@/lib/types"
 import { initialFormData } from "@/lib/types"
+import { DefaultTemplate } from "@/components/website-templates/default-template"
 
 interface WizardProps {
   websiteType: WebsiteType
@@ -97,6 +98,21 @@ export function Wizard({ websiteType, onClose }: WizardProps) {
     if (successIndex !== -1) {
       setCurrentStepIndex(successIndex)
     }
+  }
+
+  const previewWebsite: Website = {
+    id: "preview",
+    title: formData.pageTitle || "Untitled page",
+    slug: formData.pageUrl || "preview-page",
+    price: formData.price || "0",
+    sale: "0",
+    revenue: "0",
+    status: "Draft",
+    websiteType: websiteType,
+    formData,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    published: false,
   }
 
   // Show success page
@@ -187,6 +203,7 @@ export function Wizard({ websiteType, onClose }: WizardProps) {
       onClose={onClose}
       onPublish={handlePublish}
       showPublish={currentStep === "settings" || currentStep === "advanced-settings"}
+      preview={<DefaultTemplate website={previewWebsite} />}
     >
       {renderStep()}
     </WizardLayout>
