@@ -34,9 +34,9 @@ type WizardStep =
 const getStepFlow = (type: WebsiteType): WizardStep[] => {
   switch (type) {
     case "digital-products":
-      return ["upload-files", "pricing", "advanced-settings", "success"]
+      return ["upload-files", "advanced-settings", "success"]
     case "list-multiple":
-      return ["digital-files", "product-details", "pricing", "settings", "success"]
+      return ["digital-files", "product-details", "pricing", "advanced-settings", "success"]
     case "existing-products":
       return ["page-details", "advanced-settings", "success"]
     case "others":

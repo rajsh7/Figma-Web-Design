@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import type { FormData } from "@/lib/types"
+import { validateImageFile, getFilePreviewUrl, isValidUrl } from "@/lib/file-utils"
 
 interface StepPageDetailsProps {
   formData: FormData
@@ -31,9 +32,59 @@ export function StepPageDetails({ formData, updateFormData, onNext }: StepPageDe
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
+      const validation = validateImageFile(file)
+      
+      if (!validation.isValid) {
+        alert(validation.error)
+        return
+      }
+      
       updateFormData({
         coverImage: file,
-        coverImageUrl: URL.createObjectURL(file),
+        coverImageUrl: getFilePreviewUrl(file),
+      })
+      setCoverImageLink("") // Clear link input when file is uploaded
+    }
+  }
+
+  const handleAddCoverLink = () => {
+    if (coverImageLink.trim()) {
+      if (!isValidUrl(coverImageLink.trim())) {
+        alert("Please enter a valid URL")
+        return
+      }
+      
+      updateFormData({
+        coverImage: null,
+        coverImageUrl: coverImageLink.trim(),
+      })
+    }
+  }
+
+  const handleAddGalleryLink = () => {
+    if (galleryImageLink.trim()) {
+      if (!isValidUrl(galleryImageLink.trim())) {
+        alert("Please enter a valid URL")
+        return
+      }
+      
+      updateFormData({
+        galleryCoverImage: null,
+        galleryCoverImageUrl: galleryImageLink.trim(),
+      })
+    }
+  }
+
+  const handleAddTestimonialLink = () => {
+    if (testimonialImageLink.trim()) {
+      if (!isValidUrl(testimonialImageLink.trim())) {
+        alert("Please enter a valid URL")
+        return
+      }
+      
+      updateFormData({
+        testimonialImage: null,
+        testimonialImageUrl: testimonialImageLink.trim(),
       })
     }
   }
@@ -41,17 +92,18 @@ export function StepPageDetails({ formData, updateFormData, onNext }: StepPageDe
   return (
     <div className="p-4 sm:p-6 space-y-6">
       <div>
-        <h2 className="text-lg font-semibold mb-6">Tell us about your Website Page</h2>
+        <h2 className="text-lg font-semibold mb-2">Create Your Website</h2>
+        <p className="text-sm text-muted-foreground mb-6">Tell us about your business or product. We'll create a beautiful website for you!</p>
 
         {/* Website Page Title */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label htmlFor="pageTitle">Website Page Title</Label>
+            <Label htmlFor="pageTitle">Your Business/Product Name</Label>
             <span className="text-xs text-muted-foreground">{formData.pageTitle.length}/50</span>
           </div>
           <Input
             id="pageTitle"
-            placeholder="Website Page Title"
+            placeholder="e.g., John's Bakery, Handmade Jewelry Store"
             value={formData.pageTitle ?? ""}
             onChange={(e) => updateFormData({ pageTitle: e.target.value })}
             maxLength={50}
@@ -60,30 +112,33 @@ export function StepPageDetails({ formData, updateFormData, onNext }: StepPageDe
 
         {/* Select/Category */}
         <div className="space-y-2 mt-4">
-          <Label>Select</Label>
+          <Label>What type of business do you have?</Label>
           <Select
             value={formData.category ?? ""}
             onValueChange={(value) => updateFormData({ category: value })}
           >
             <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select a category" />
+              <SelectValue placeholder="Choose your business type" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="education">Education</SelectItem>
-              <SelectItem value="business">Business</SelectItem>
-              <SelectItem value="entertainment">Entertainment</SelectItem>
+              <SelectItem value="restaurant">Restaurant/Food</SelectItem>
+              <SelectItem value="retail">Retail/Shopping</SelectItem>
+              <SelectItem value="services">Services</SelectItem>
+              <SelectItem value="handmade">Handmade/Crafts</SelectItem>
+              <SelectItem value="education">Education/Training</SelectItem>
+              <SelectItem value="health">Health/Fitness</SelectItem>
               <SelectItem value="technology">Technology</SelectItem>
-              <SelectItem value="lifestyle">Lifestyle</SelectItem>
+              <SelectItem value="other">Other</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         {/* Cover Image */}
         <div className="space-y-2 mt-4">
-          <Label>Cover Image</Label>
+          <Label>Main Photo (Your logo, product, or storefront)</Label>
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
             <Input
-              placeholder="Add file link"
+              placeholder="Or paste image link from Google/Facebook"
               className="flex-1"
               value={coverImageLink ?? ""}
               onChange={(e) => setCoverImageLink(e.target.value)}
@@ -93,16 +148,9 @@ export function StepPageDetails({ formData, updateFormData, onNext }: StepPageDe
               size="sm"
               className="sm:w-auto w-full"
               type="button"
-              onClick={() => {
-                if (coverImageLink.trim()) {
-                  updateFormData({
-                    coverImage: null,
-                    coverImageUrl: coverImageLink.trim(),
-                  })
-                }
-              }}
+              onClick={handleAddCoverLink}
             >
-              Add Link
+              Add Photo
             </Button>
           </div>
           <div className="border-2 border-dashed rounded-lg p-8 text-center">
@@ -123,9 +171,9 @@ export function StepPageDetails({ formData, updateFormData, onNext }: StepPageDe
               ) : (
                 <>
                   <Upload className="size-8 mx-auto text-muted-foreground mb-2" />
-                  <p className="text-sm text-muted-foreground">Upload Image</p>
+                  <p className="text-sm text-muted-foreground">Click to upload your photo</p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Recommending 1200px x 1200 or up to 10 mb
+                    Best size: 1200px x 600px (up to 10MB)
                   </p>
                 </>
               )}
@@ -135,26 +183,10 @@ export function StepPageDetails({ formData, updateFormData, onNext }: StepPageDe
 
         {/* Description */}
         <div className="space-y-2 mt-4">
-          <Label>Description</Label>
+          <Label>Tell customers about your business</Label>
           <div className="border rounded-md">
-            <div className="flex items-center gap-1 p-2 border-b bg-muted/30">
-              <select className="text-xs bg-transparent border-none outline-none">
-                <option>Paragraph</option>
-                <option>Heading 1</option>
-                <option>Heading 2</option>
-              </select>
-              <div className="h-4 w-px bg-border mx-1" />
-              <button className="p-1 hover:bg-muted rounded text-sm font-bold">B</button>
-              <button className="p-1 hover:bg-muted rounded text-sm italic">I</button>
-              <button className="p-1 hover:bg-muted rounded text-sm underline">U</button>
-              <button className="p-1 hover:bg-muted rounded text-sm line-through">S</button>
-              <div className="h-4 w-px bg-border mx-1" />
-              <button className="p-1 hover:bg-muted rounded">
-                <Link2 className="size-4" />
-              </button>
-            </div>
             <Textarea
-              placeholder="Type your description..."
+              placeholder="e.g., We make fresh homemade bread daily using traditional recipes. Visit our bakery for the best pastries in town!"
               value={formData.description ?? ""}
               onChange={(e) => updateFormData({ description: e.target.value })}
               className="border-0 min-h-24 resize-none focus-visible:ring-0"
@@ -165,11 +197,11 @@ export function StepPageDetails({ formData, updateFormData, onNext }: StepPageDe
         {/* Primary CTA */}
         <div className="space-y-2 mt-4">
           <div className="flex items-center justify-between">
-            <Label>Primary CTA</Label>
+            <Label>Call-to-Action Button Text</Label>
             <span className="text-xs text-muted-foreground">{formData.primaryCta.length}/50</span>
           </div>
           <Input
-            placeholder="Get it Now"
+            placeholder="e.g., Order Now, Contact Us, Buy Now, Learn More"
             value={formData.primaryCta ?? ""}
             onChange={(e) => updateFormData({ primaryCta: e.target.value })}
             maxLength={50}
@@ -235,14 +267,7 @@ export function StepPageDetails({ formData, updateFormData, onNext }: StepPageDe
                   size="sm"
                   type="button"
                   className="sm:w-auto w-full"
-                  onClick={() => {
-                    if (galleryImageLink.trim()) {
-                      updateFormData({
-                        galleryCoverImage: null,
-                        galleryCoverImageUrl: galleryImageLink.trim(),
-                      })
-                    }
-                  }}
+                  onClick={handleAddGalleryLink}
                 >
                   Add Link
                 </Button>
@@ -257,10 +282,18 @@ export function StepPageDetails({ formData, updateFormData, onNext }: StepPageDe
                   onChange={(e) => {
                     const file = e.target.files?.[0]
                     if (file) {
+                      const validation = validateImageFile(file)
+                      
+                      if (!validation.isValid) {
+                        alert(validation.error)
+                        return
+                      }
+                      
                       updateFormData({
                         galleryCoverImage: file,
-                        galleryCoverImageUrl: URL.createObjectURL(file),
+                        galleryCoverImageUrl: getFilePreviewUrl(file),
                       })
+                      setGalleryImageLink("") // Clear link input when file is uploaded
                     }
                   }}
                 />
@@ -345,14 +378,7 @@ export function StepPageDetails({ formData, updateFormData, onNext }: StepPageDe
                   size="sm"
                   type="button"
                   className="sm:w-auto w-full"
-                  onClick={() => {
-                    if (testimonialImageLink.trim()) {
-                      updateFormData({
-                        testimonialImage: null,
-                        testimonialImageUrl: testimonialImageLink.trim(),
-                      })
-                    }
-                  }}
+                  onClick={handleAddTestimonialLink}
                 >
                   Add Link
                 </Button>
@@ -367,10 +393,18 @@ export function StepPageDetails({ formData, updateFormData, onNext }: StepPageDe
                   onChange={(e) => {
                     const file = e.target.files?.[0]
                     if (file) {
+                      const validation = validateImageFile(file)
+                      
+                      if (!validation.isValid) {
+                        alert(validation.error)
+                        return
+                      }
+                      
                       updateFormData({
                         testimonialImage: file,
-                        testimonialImageUrl: URL.createObjectURL(file),
+                        testimonialImageUrl: getFilePreviewUrl(file),
                       })
+                      setTestimonialImageLink("") // Clear link input when file is uploaded
                     }
                   }}
                 />
@@ -443,7 +477,46 @@ export function StepPageDetails({ formData, updateFormData, onNext }: StepPageDe
           </div>
         )}
 
-        {/* Footer settings removed per request */}
+        {/* Contact Information */}
+        <div className="space-y-3 mt-6 p-4 border rounded-lg">
+          <Label className="text-base font-semibold">Contact Information</Label>
+          
+          <div className="space-y-2">
+            <Label>Phone Number</Label>
+            <Input
+              placeholder="e.g., +91 98765 43210"
+              value={formData.phoneNumber || ""}
+              onChange={(e) => updateFormData({ phoneNumber: e.target.value })}
+            />
+          </div>
+          
+          <div className="space-y-2">
+            <Label>WhatsApp Number (if different)</Label>
+            <Input
+              placeholder="e.g., +91 98765 43210"
+              value={formData.whatsappNumber || ""}
+              onChange={(e) => updateFormData({ whatsappNumber: e.target.value })}
+            />
+          </div>
+          
+          <div className="space-y-2">
+            <Label>Email Address</Label>
+            <Input
+              placeholder="e.g., contact@yourbusiness.com"
+              value={formData.email || ""}
+              onChange={(e) => updateFormData({ email: e.target.value })}
+            />
+          </div>
+          
+          <div className="space-y-2">
+            <Label>Address</Label>
+            <Input
+              placeholder="e.g., Shop 123, Main Street, City - 400001"
+              value={formData.address || ""}
+              onChange={(e) => updateFormData({ address: e.target.value })}
+            />
+          </div>
+        </div>
       </div>
 
       {/* Next Button */}

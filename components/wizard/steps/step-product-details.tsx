@@ -25,20 +25,12 @@ export function StepProductDetails({ formData, updateFormData, onNext, onBack }:
       <div className="space-y-4">
         {/* Title */}
         <div className="space-y-2">
-          <Label>Title</Label>
-          <Select
+          <Label>Product Title</Label>
+          <Input
+            placeholder="Enter product title"
             value={formData.productTitle}
-            onValueChange={(value) => updateFormData({ productTitle: value })}
-          >
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Title" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="product-1">Product Title 1</SelectItem>
-              <SelectItem value="product-2">Product Title 2</SelectItem>
-              <SelectItem value="product-3">Product Title 3</SelectItem>
-            </SelectContent>
-          </Select>
+            onChange={(e) => updateFormData({ productTitle: e.target.value })}
+          />
         </div>
 
         {/* Product descriptions */}

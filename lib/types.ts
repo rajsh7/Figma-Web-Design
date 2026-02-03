@@ -73,6 +73,12 @@ export interface FormData {
   purchasingPowerParity: boolean
   limitPurchases: boolean
 
+  // Contact Information
+  phoneNumber: string
+  whatsappNumber: string
+  email: string
+  address: string
+  
   // Advanced Settings (Step 3)
   theme: string
   style: "design" | "reset"
@@ -129,7 +135,10 @@ export const initialFormData: FormData = {
   faqAnswer: "",
   aboutUsTitle: "",
   aboutUsDescription: "",
-  digitalFileType: "single",
+  phoneNumber: "",
+  whatsappNumber: "",
+  email: "",
+  address: "",
   digitalFileUrl: "",
   digitalFileCoverImage: null,
   digitalFileCoverImageUrl: "",
@@ -143,7 +152,7 @@ export const initialFormData: FormData = {
   theme: "default",
   style: "design",
   buttonColor: "#000000",
-  textColor: "#FFFFFF",
+  textColor: "#000000",
   checkoutType: "same-page",
   emailRequired: true,
   phoneRequired: false,

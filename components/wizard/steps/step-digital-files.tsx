@@ -16,6 +16,7 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import type { FormData } from "@/lib/types"
 import { useState } from "react"
+import { validateImageFile, getFilePreviewUrl } from "@/lib/file-utils"
 
 interface StepDigitalFilesProps {
   formData: FormData
@@ -25,13 +26,31 @@ interface StepDigitalFilesProps {
 
 export function StepDigitalFiles({ formData, updateFormData, onNext }: StepDigitalFilesProps) {
   const [tab, setTab] = useState<"digital-files" | "product-details" | "price-policy">("digital-files")
+  const [imageLink, setImageLink] = useState(formData.digitalFileCoverImageUrl || "")
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
+      const validation = validateImageFile(file)
+      
+      if (!validation.isValid) {
+        alert(validation.error)
+        return
+      }
+      
       updateFormData({
         digitalFileCoverImage: file,
-        digitalFileCoverImageUrl: URL.createObjectURL(file),
+        digitalFileCoverImageUrl: getFilePreviewUrl(file),
+      })
+      setImageLink("") // Clear link when file is uploaded
+    }
+  }
+
+  const handleAddImageLink = () => {
+    if (imageLink.trim()) {
+      updateFormData({
+        digitalFileCoverImage: null,
+        digitalFileCoverImageUrl: imageLink.trim(),
       })
     }
   }
@@ -104,6 +123,23 @@ export function StepDigitalFiles({ formData, updateFormData, onNext }: StepDigit
             {/* Cover Image Upload */}
             <div className="space-y-2">
               <Label>Cover Image</Label>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
+                <Input
+                  placeholder="Or paste image link"
+                  className="flex-1"
+                  value={imageLink}
+                  onChange={(e) => setImageLink(e.target.value)}
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="sm:w-auto w-full"
+                  type="button"
+                  onClick={handleAddImageLink}
+                >
+                  Add Link
+                </Button>
+              </div>
               <div className="border-2 border-dashed rounded-lg p-8 text-center">
                 <input
                   type="file"

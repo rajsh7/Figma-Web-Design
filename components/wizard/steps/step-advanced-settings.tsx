@@ -100,7 +100,7 @@ export function StepAdvancedSettings({ formData, updateFormData, onNext, onBack 
           <Button
             variant={activeStyleSection === "buttons" ? "default" : "outline"}
             size="sm"
-            className="rounded-full bg-transparent"
+            className="rounded-full"
             onClick={() => setActiveStyleSection("buttons")}
           >
             Buttons
@@ -108,7 +108,7 @@ export function StepAdvancedSettings({ formData, updateFormData, onNext, onBack 
           <Button
             variant={activeStyleSection === "images" ? "default" : "outline"}
             size="sm"
-            className="rounded-full bg-transparent"
+            className="rounded-full"
             onClick={() => setActiveStyleSection("images")}
           >
             Images
@@ -176,7 +176,7 @@ export function StepAdvancedSettings({ formData, updateFormData, onNext, onBack 
           <Button
             variant={formData.checkoutType === "customize" ? "default" : "outline"}
             size="sm"
-            className="rounded-full bg-transparent"
+            className="rounded-full"
             onClick={() => updateFormData({ checkoutType: "customize" })}
           >
             Customize
@@ -184,10 +184,13 @@ export function StepAdvancedSettings({ formData, updateFormData, onNext, onBack 
         </div>
 
         {/* Customer information */}
-        <div className="space-y-2">
+        <div className="space-y-3">
           <Label>Customer information</Label>
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-sm text-muted-foreground">Email ID</span>
+          <div className="flex items-center justify-between gap-2 p-3 border rounded-lg">
+            <div>
+              <span className="text-sm font-medium">Email ID</span>
+              <p className="text-xs text-muted-foreground">Require customers to provide email</p>
+            </div>
             <Switch
               checked={formData.emailRequired}
               onCheckedChange={(checked) => updateFormData({ emailRequired: checked })}
@@ -215,6 +218,18 @@ export function StepAdvancedSettings({ formData, updateFormData, onNext, onBack 
               />
             </div>
           </div>
+          
+          {/* Phone number field when enabled */}
+          {formData.phoneRequired && (
+            <div className="space-y-2 mt-3">
+              <Label className="text-sm">Phone Number Label</Label>
+              <Input
+                placeholder="Enter phone number label (e.g., 'Phone Number')"
+                defaultValue="Phone Number"
+              />
+            </div>
+          )}
+          
           <Button
             variant="link"
             className="text-teal-600 p-0 h-auto text-sm"
@@ -242,9 +257,9 @@ export function StepAdvancedSettings({ formData, updateFormData, onNext, onBack 
       <div className="space-y-4 pt-4 border-t">
         <h3 className="font-semibold">Pricing</h3>
         <div className="space-y-2">
-          <Label>GST or Price</Label>
+          <Label>GST or Additional Charges</Label>
           <Input
-            placeholder="Type"
+            placeholder="Enter GST percentage or additional charges"
             value={formData.gstPrice ?? ""}
             onChange={(e) => updateFormData({ gstPrice: e.target.value })}
           />
@@ -258,7 +273,7 @@ export function StepAdvancedSettings({ formData, updateFormData, onNext, onBack 
         <div className="space-y-2">
           <Label>Terms and Conditions</Label>
           <Input
-            placeholder="Type"
+            placeholder="Enter your terms and conditions"
             value={formData.termsConditions ?? ""}
             onChange={(e) => updateFormData({ termsConditions: e.target.value })}
           />
@@ -267,7 +282,7 @@ export function StepAdvancedSettings({ formData, updateFormData, onNext, onBack 
         <div className="space-y-2">
           <Label>Refund Policy</Label>
           <Input
-            placeholder="Type"
+            placeholder="Enter your refund policy"
             value={formData.refundPolicy ?? ""}
             onChange={(e) => updateFormData({ refundPolicy: e.target.value })}
           />
@@ -276,7 +291,7 @@ export function StepAdvancedSettings({ formData, updateFormData, onNext, onBack 
         <div className="space-y-2">
           <Label>Privacy Policy</Label>
           <Input
-            placeholder="Type"
+            placeholder="Enter your privacy policy"
             value={formData.privacyPolicy ?? ""}
             onChange={(e) => updateFormData({ privacyPolicy: e.target.value })}
           />
@@ -288,7 +303,7 @@ export function StepAdvancedSettings({ formData, updateFormData, onNext, onBack 
         <div className="space-y-2">
           <Label>Page URL</Label>
           <Input
-            placeholder="Type"
+            placeholder="Enter custom URL (e.g., my-business-name)"
             value={formData.pageUrl ?? ""}
             onChange={(e) => updateFormData({ pageUrl: e.target.value })}
           />
@@ -304,7 +319,7 @@ export function StepAdvancedSettings({ formData, updateFormData, onNext, onBack 
         <div className="space-y-2">
           <Label>What do you want to show users after their purchase? *</Label>
           <Input
-            placeholder="Type"
+            placeholder="e.g., Thank you for your purchase! Check your email for details."
             value={formData.postPurchaseBehavior ?? ""}
             onChange={(e) => updateFormData({ postPurchaseBehavior: e.target.value })}
           />
@@ -323,7 +338,7 @@ export function StepAdvancedSettings({ formData, updateFormData, onNext, onBack 
           <div className="space-y-2">
             <Label className="text-xs">Pixel ID</Label>
             <Input
-              placeholder="Type"
+              placeholder="Enter your Meta Pixel ID"
               value={formData.metaPixelId ?? ""}
               onChange={(e) => updateFormData({ metaPixelId: e.target.value })}
             />
@@ -338,7 +353,7 @@ export function StepAdvancedSettings({ formData, updateFormData, onNext, onBack 
           <div className="space-y-2">
             <Label className="text-xs">Pixel ID</Label>
             <Input
-              placeholder="Type"
+              placeholder="Enter your Google Analytics ID"
               value={formData.googleAnalyticsId ?? ""}
               onChange={(e) => updateFormData({ googleAnalyticsId: e.target.value })}
             />

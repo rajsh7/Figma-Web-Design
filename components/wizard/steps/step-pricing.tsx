@@ -54,8 +54,8 @@ export function StepPricing({ formData, updateFormData, onNext, onBack }: StepPr
               <Label>Price *</Label>
               <Input
                 type="number"
-                placeholder="0"
-                value={formData.price ?? ""}
+                placeholder="999"
+                value={formData.price ?? "999"}
                 onChange={(e) => updateFormData({ price: e.target.value })}
               />
             </div>
@@ -63,7 +63,7 @@ export function StepPricing({ formData, updateFormData, onNext, onBack }: StepPr
               <Label>Discount Price</Label>
               <Input
                 type="number"
-                placeholder="0"
+                placeholder="799"
                 value={formData.discountPrice ?? ""}
                 onChange={(e) => updateFormData({ discountPrice: e.target.value })}
               />
@@ -104,7 +104,7 @@ export function StepPricing({ formData, updateFormData, onNext, onBack }: StepPr
           <div>
             <h4 className="font-medium">Limit total number of purchases?</h4>
             <p className="text-sm text-muted-foreground">
-              Charge different prices based on the cost of living in a country.
+              Set a maximum number of times this product can be purchased.
             </p>
           </div>
           <Switch
